@@ -1,5 +1,6 @@
 package com.coupon.Service.Impl;
 
+import com.coupon.Entity.Category;
 import com.coupon.Entity.Coupon;
 import com.coupon.Entity.Product;
 import com.coupon.Exception.ResourceNotFoundException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class CouponServiceImpl implements CouponService {
@@ -50,7 +52,7 @@ public class CouponServiceImpl implements CouponService {
 //    }
 
     @Override
-    public Coupon saveCoupon(Coupon coupon) {
+    public Coupon saveCoupon(Coupon coupon) throws ResourceNotFoundException {
         return couponRepository.save(coupon);
     }
 
@@ -89,6 +91,10 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public List<Coupon> getCouponsForProduct(Long id) throws ResourceNotFoundException {
+        Optional<Coupon> coupon= couponRepository.findById(id);
+        if (coupon.isEmpty()){
+            throw  new ResourceNotFoundException("coupons for product is not present");
+        }
         return  couponRepository.findByProductId(id);
     }
 
@@ -202,6 +208,48 @@ public class CouponServiceImpl implements CouponService {
 //        return couponRepository.findByCouponCodeAndProduct(couponCode, product);
 //
 //    }
+
+
+//    @Override
+//    public Coupon getRegionDiscount(Long id, String region){
+//        Coupon coupon = couponRepository.findByRegion(id,region);
+//
+////       double regionDiscount =  coupon.getRegionDiscount();
+////       double existingDiscount = coupon.getDiscountPercentage();
+////       double totalDiscount = regionDiscount + existingDiscount;
+//
+//
+//       return  couponRepository.findByRegion(id,region);
+//
+//    }
+
+
+
+    @Override
+    public Coupon getTotalDiscount(Long couponId, String region) throws ResourceNotFoundException{
+        Coupon coupon = couponRepository.findById(couponId).orElse(null);
+        if (coupon != null && region.equalsIgnoreCase(coupon.getRegion())) {
+            double regionDiscount = coupon.getRegionDiscount() != null ? coupon.getRegionDiscount() : 0;
+
+            coupon.setTotalDiscountPercentage(regionDiscount + coupon.getDiscountPercentage());
+            // Calculate total discount percentage
+
+            return couponRepository.save(coupon);
+        }
+//        if (coupon != null && region.equalsIgnoreCase(coupon.getRegion())) {
+//            double regionDiscount = coupon.getRegionDiscount() != null ? coupon.getRegionDiscount() : 0;
+//            coupon.setTotalDiscountPercentage(coupon.getDiscountPercentage() + regionDiscount);
+//        } else {
+//            coupon.setTotalDiscountPercentage(coupon.getDiscountPercentage());
+//        }
+        else {
+            throw new ResourceNotFoundException("Coupon not found for ID: " + couponId + " and region: " + region);
+        } // Handle appropriately if coupon or region is not found
+    }
+
+
+
+
 
 }
 

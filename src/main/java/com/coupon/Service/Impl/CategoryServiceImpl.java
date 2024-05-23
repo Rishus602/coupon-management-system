@@ -7,6 +7,8 @@ import com.coupon.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,8 +21,29 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<Category> getAllCategories() {
+    public List<Category> getAllCategories() throws ResourceNotFoundException {
+        List<Category> category = categoryRepository.findAll();
+        if (category.isEmpty()){
+            throw new ResourceNotFoundException("Something wrong with url");
+        }
+
         return categoryRepository.findAll();
+//        try {
+//            List<Category> categories = categoryRepository.findAll();
+//            if (categories.isEmpty()) {
+//                throw new ResourceNotFoundException("No categories found");
+//            }
+//            return categories;
+//        } catch (HttpClientErrorException.NotFound | HttpServerErrorException.BadGateway ex) {
+//            // Handle 404 Not Found error specifically
+//            throw new ResourceNotFoundException("The requested resource was not found. Detail: " + ex.getMessage());
+//        } catch (ResourceNotFoundException ex) {
+//            // Handle ResourceNotFoundException
+//            throw ex;
+//        } catch (Exception ex) {
+//            // Handle other exceptions generically
+//            throw new ResourceNotFoundException("An error occurred while processing the request: " + ex.getMessage());
+//        }
     }
 
     @Override
@@ -40,8 +63,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Long id) {
-categoryRepository.deleteById(id);
+    public void deleteCategory(Long id) throws ResourceNotFoundException {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isEmpty()) {
+            throw new ResourceNotFoundException("Category id is deleted / the id is wrong");
+        }
+        categoryRepository.deleteById(id);
     }
 
 

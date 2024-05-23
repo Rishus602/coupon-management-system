@@ -54,6 +54,37 @@ public class Coupon {
 //for usage of coupon
     private  int usageCount;
 
+//@Column(name = "region")
+//private String region;
+//    // Add a new field for region-specific discount
+//    @Column(name = "region_discount")
+//    private Double regionDiscount;
+//
+//    // Add a field for total discount
+//    @Column(name = "total_discount")
+//    private Double totalDiscount;
+
+    @Column(name = "total_discount_percentage")
+    private Double totalDiscountPercentage;
+
+
+
+    @Column(name = "region")
+//    region new add field
+    private String region;
+
+
+    @Column(name = "region_discount")
+//    region discount
+    private Double regionDiscount;
+
+
+
+//
+//
+////    for region specific discount plus discount percentage
+//private Double totalDiscount;
+
 
 
     // Constructor that generates the coupon code based on the discount percentage
@@ -64,6 +95,20 @@ public class Coupon {
         this.startDate = startDate;
         this.product = product;
 
+
+
+    }
+
+
+
+
+    // Method to calculate total discount percentage
+    public void calculateTotalDiscountPercentage() {
+        if (regionDiscount != null) {
+            totalDiscountPercentage = discountPercentage + regionDiscount;
+        } else {
+            totalDiscountPercentage = discountPercentage;
+        }
     }
 
 

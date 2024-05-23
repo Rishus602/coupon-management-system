@@ -5,7 +5,6 @@ import com.coupon.Entity.Category;
 import com.coupon.Exception.ResourceNotFoundException;
 import com.coupon.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +15,8 @@ public class CategoryController {
 
     @Autowired
 private CategoryService categoryService;
+
+
 
 
     // Create a new category
@@ -30,7 +31,7 @@ private CategoryService categoryService;
 //        getting all category
 
         @GetMapping("/getAll")
-    public List<Category> getAllCategory(){
+    public List<Category> getAllCategory() throws ResourceNotFoundException {
         return categoryService.getAllCategories();
     }
 
@@ -45,7 +46,7 @@ private CategoryService categoryService;
 
 //    delete a category
     @DeleteMapping("/delete/{id}")
-    public String deleteCategory(@PathVariable Long id){
+    public String deleteCategory(@PathVariable Long id) throws ResourceNotFoundException{
         categoryService.deleteCategory(id);
         return "Category deleted Successfully!";
     }

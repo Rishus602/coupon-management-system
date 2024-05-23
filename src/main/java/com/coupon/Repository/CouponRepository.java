@@ -11,8 +11,14 @@ import java.util.Optional;
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon,Long> {
     public List<Coupon> findByProductId(Long id);
-//    Coupon findByCouponCodeAndProduct(Long id, Product product);
+
 
     Optional<Coupon> findByCouponCodeAndProductId(String couponCode, Long productId );
+
+
+
+
+//    Coupon findByRegion(Long id, String region);
+//    Coupon findByCouponCodeAndProduct(Long id, Product product);
 
 }
